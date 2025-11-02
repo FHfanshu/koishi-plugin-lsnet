@@ -1,41 +1,43 @@
-﻿# 鍙戝竷鎸囧崡
+# 发布指南
 
-鏈枃妗ｈ鏄庡浣曞皢 `koishi-plugin-lsnet` 鍙戝竷鍒?npm 鍜?GitHub銆?
-## 鍓嶇疆鍑嗗
+本文说明如何将 `koishi-plugin-lsnet` 发布到 npm 和 GitHub。
 
-### 1. npm 璐﹀彿
+## 前置准备
 
-纭繚浣犳湁 npm 璐﹀彿锛屽鏋滄病鏈夎鍦?[npmjs.com](https://www.npmjs.com/) 娉ㄥ唽銆?
-鐧诲綍 npm锛?
+### 1. npm 账号
+
+确保你有 npm 账号，如果没有请在 [npmjs.com](https://www.npmjs.com/) 注册。
+登录 npm：
 ```bash
 npm login
 ```
 
-### 2. GitHub 浠撳簱
+### 2. GitHub 仓库
 
-鍦?GitHub 涓婂垱寤轰粨搴?`koishi-plugin-lsnet`銆?
-### 3. 鏇存柊閰嶇疆
+在 GitHub 上创建仓库 `koishi-plugin-lsnet`。
 
-鍦?`package.json` 涓洿鏂颁互涓嬪瓧娈碉細
+### 3. 更新配置
+
+在 `package.json` 中更新以下字段：
 
 ```json
 {
-  "author": "浣犵殑鍚嶅瓧",
+  "author": "你的名字",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/浣犵殑鐢ㄦ埛鍚?koishi-plugin-lsnet.git"
+    "url": "git+https://github.com/你的用户名/koishi-plugin-lsnet.git"
   },
   "bugs": {
-    "url": "https://github.com/浣犵殑鐢ㄦ埛鍚?koishi-plugin-lsnet/issues"
+    "url": "https://github.com/你的用户名/koishi-plugin-lsnet/issues"
   },
-  "homepage": "https://github.com/浣犵殑鐢ㄦ埛鍚?koishi-plugin-lsnet#readme"
+  "homepage": "https://github.com/你的用户名/koishi-plugin-lsnet#readme"
 }
 ```
 
-鍚屾椂鏇存柊 `README.md` 涓殑鎵€鏈夐摼鎺ャ€?
-## 鍙戝竷鍒?GitHub
+同时更新 `README.md` 中的所有链接。
+## 发布到 GitHub
 
-### 1. 鍒濆鍖?Git 浠撳簱
+### 1. 初始化 Git 仓库
 
 ```bash
 git init
@@ -43,71 +45,75 @@ git add .
 git commit -m "Initial commit: koishi-plugin-lsnet v1.0.0"
 ```
 
-### 2. 娣诲姞杩滅▼浠撳簱
+### 2. 添加远程仓库
 
 ```bash
-git remote add origin https://github.com/浣犵殑鐢ㄦ埛鍚?koishi-plugin-lsnet.git
+git remote add origin https://github.com/你的用户名/koishi-plugin-lsnet.git
 git branch -M main
 git push -u origin main
 ```
 
-### 3. 鍒涘缓 Release
+### 3. 创建 Release
 
-鍦?GitHub 涓婂垱寤轰竴涓柊鐨?Release锛?
-1. 杩涘叆浠撳簱鐨?Releases 椤甸潰
-2. 鐐瑰嚮 "Create a new release"
+在 GitHub 上创建一个新的 Release：
+1. 进入仓库的 Releases 页面
+2. 点击 "Create a new release"
 3. Tag version: `v1.0.0`
 4. Release title: `v1.0.0 - Initial Release`
-5. 鎻忚堪鍙戝竷鍐呭锛堝彲浠ヤ粠 CHANGELOG.md 澶嶅埗锛?6. 鐐瑰嚮 "Publish release"
+5. 描述发布内容（可以从 CHANGELOG.md 复制）
+6. 点击 "Publish release"
 
-## 鍙戝竷鍒?npm
+## 发布到 npm
 
-### 1. 楠岃瘉鍖呭唴瀹?
-妫€鏌ュ皢瑕佸彂甯冪殑鏂囦欢锛?
+### 1. 确认包内容
+检查将要发布的文件：
 ```bash
 npm pack --dry-run
 ```
 
-纭繚鍖呭惈浠ヤ笅鏂囦欢锛?- `index.js`
+确保包包含以下文件：
+- `index.js`
 - `src/index.ts`
 - `README.md`
 - `LICENSE`
 - `package.json`
 
-### 2. 鍙戝竷鍒?npm
+### 2. 发布到 npm
 
 ```bash
 npm publish
 ```
 
-濡傛灉鏄涓€娆″彂甯冿紝鍙兘闇€瑕侀獙璇侀偖绠便€?
-### 3. 楠岃瘉鍙戝竷
+如果是第一次发布，可能需要验证邮件。
 
-璁块棶 npm 鍖呴〉闈細
+### 3. 确认发布
+
+访问 npm 包页面：
 
 ```
 https://www.npmjs.com/package/koishi-plugin-lsnet
 ```
 
-## 鍚庣画鐗堟湰鏇存柊
+## 后续版本更新
 
-### 1. 鏇存柊鐗堟湰鍙?
-鏍规嵁鍙樻洿绫诲瀷鏇存柊鐗堟湰鍙凤紙閬靛惊璇箟鍖栫増鏈級锛?
+### 1. 更新版本号
+根据变更类型更新版本号（语义化版本）：
 ```bash
-# 琛ヤ竵鐗堟湰 (bug 淇)
+# 补丁版本 (bug 修复)
 npm version patch
 
-# 娆＄増鏈?(鏂板姛鑳斤紝鍚戝悗鍏煎)
+# 次版本号 (新功能，向后兼容)
 npm version minor
 
-# 涓荤増鏈?(鐮村潖鎬у彉鏇?
+# 主版本号 (破坏性变更)
 npm version major
 ```
 
-### 2. 鏇存柊 CHANGELOG.md
+### 2. 更新 CHANGELOG.md
 
-鍦?`CHANGELOG.md` 涓褰曟柊鐗堟湰鐨勫彉鏇淬€?
-### 3. 鎻愪氦骞舵帹閫?
+在 `CHANGELOG.md` 中记录新版本的变化。
+
+### 3. 提交并推送
 ```bash
 git add .
 git commit -m "Release vX.Y.Z"
@@ -115,24 +121,26 @@ git push
 git push --tags
 ```
 
-### 4. 鍙戝竷鍒?npm
+### 4. 发布到 npm
 
 ```bash
 npm publish
 ```
 
-### 5. 鍦?GitHub 鍒涘缓鏂?Release
+### 5. 在 GitHub 创建新 Release
 
-鍙傝€冧笂闈㈢殑姝ラ鍦?GitHub 鍒涘缓鏂扮殑 Release銆?
-## 鏈€浣冲疄璺?
-1. **娴嬭瘯鍚庡啀鍙戝竷**锛氱‘淇濆湪鏈湴鍜?example 鐩綍涓厖鍒嗘祴璇?2. **鐗堟湰鍙疯鑼?*锛氫弗鏍奸伒寰涔夊寲鐗堟湰瑙勮寖
-3. **CHANGELOG**锛氭瘡娆″彂甯冮兘鏇存柊 CHANGELOG
-4. **鏂囨。鍚屾**锛氱‘淇?README 鍜屼唬鐮佷繚鎸佸悓姝?5. **鏍囩绠＄悊**锛氫负姣忎釜鐗堟湰鍒涘缓 Git 鏍囩
-6. **鎸佺画闆嗘垚**锛氳€冭檻娣诲姞 GitHub Actions 鑷姩鍖栨祴璇曞拰鍙戝竷
+参考上面的步骤在 GitHub 创建新的 Release。
+## 最佳实践
+1. **测试后再发布**：确保在本地和 example 目录中充分测试
+2. **版本号规范**：严格遵循语义化版本规范
+3. **CHANGELOG**：每次发布都更新 CHANGELOG
+4. **文档同步**：确保 README 和代码保持同步
+5. **标签管理**：为每个版本创建 Git 标签
+6. **持续集成**：考虑添加 GitHub Actions 自动化测试和发布
 
-## 娴嬭瘯瀹夎
+## 测试安装
 
-鍙戝竷鍚庯紝鍦ㄦ柊鐩綍涓祴璇曞畨瑁咃細
+发布后，在新目录中测试安装：
 
 ```bash
 mkdir test-install
@@ -141,21 +149,22 @@ npm init -y
 npm install koishi-plugin-lsnet
 ```
 
-妫€鏌ユ彃浠舵槸鍚︽纭畨瑁呭拰鍙敤銆?
-## 鏁呴殰鎺掗櫎
+检查插件是否正确安装和可用。
+## 故障排除
 
-### npm 鍙戝竷澶辫触
+### npm 发布失败
 
-- 妫€鏌ユ槸鍚﹀凡鐧诲綍锛歚npm whoami`
-- 妫€鏌ュ寘鍚嶆槸鍚﹀凡琚崰鐢?- 纭 package.json 閰嶇疆姝ｇ‘
+- 检查是否已登录：`npm whoami`
+- 检查包名是否已被占用
+- 确保 package.json 配置正确
 
-### GitHub 鎺ㄩ€佸け璐?
-- 妫€鏌ヨ繙绋嬩粨搴?URL 鏄惁姝ｇ‘
-- 纭鏈夋帹閫佹潈闄?- 灏濊瘯浣跨敤 SSH 鑰屼笉鏄?HTTPS
+### GitHub 推送失败
+- 检查远程仓库 URL 是否正确
+- 确保有推送权限
+- 尝试使用 SSH 而不是 HTTPS
 
-## 鐩稿叧閾炬帴
+## 相关链接
 
-- [npm 鏂囨。](https://docs.npmjs.com/)
-- [璇箟鍖栫増鏈琞(https://semver.org/lang/zh-CN/)
+- [npm 文档](https://docs.npmjs.com/)
+- [语义化版本](https://semver.org/lang/zh-CN/)
 - [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)
-

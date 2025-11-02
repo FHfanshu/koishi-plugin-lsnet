@@ -1,90 +1,99 @@
-﻿# koishi-plugin-lsnet
+# koishi-plugin-lsnet
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-lsnet?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-lsnet)
 [![License](https://img.shields.io/github/license/FHfanshu/koishi-plugin-lsnet?style=flat-square)](https://github.com/FHfanshu/koishi-plugin-lsnet/blob/main/LICENSE)
 
-Koishi 鎻掍欢锛岄€氳繃璋冪敤鏈湴 ComfyUI LSNet API 鏉ヨ瘑鍒浘鐗囩殑鐢诲笀椋庢牸銆?
-## 鍔熻兘鐗规€?
-- 馃帹 **鐢诲笀椋庢牸璇嗗埆**锛氫娇鐢?[Kaloscope 2.0](https://huggingface.co/heathcliff01/Kaloscope2.0) 妯″瀷杩涜鍥剧墖鐢诲笀椋庢牸鎺ㄧ悊
-- 馃摫 **OneBot 鍗忚鏀寔**锛氬畬缇庢敮鎸?OneBot 鍗忚鐨勮亰澶╁钩鍙?- 鈿欙笍 **鐏垫椿閰嶇疆**锛氭敮鎸佽嚜瀹氫箟 API 绔偣銆佹ā鍨嬪弬鏁扮瓑
-- 馃殌 **楂樻€ц兘**锛氬埄鐢ㄦ湰鍦?ComfyUI 鏈嶅姟锛屽揩閫熷搷搴?
-## 鍓嶇疆瑕佹眰
+Koishi 插件，通过调用本地 ComfyUI LSNet API 来识别图片的画家风格。
 
-1. **ComfyUI LSNet 鎻掍欢**锛氶渶瑕佸湪鏈湴瀹夎骞惰繍琛?[comfyui-lsnet](https://github.com/spawner1145/comfyui-lsnet)
-2. **Kaloscope 妯″瀷**锛氫笅杞?[Kaloscope 2.0 妯″瀷](https://huggingface.co/heathcliff01/Kaloscope2.0/tree/main) 骞舵斁缃埌 ComfyUI 鐨勬ā鍨嬬洰褰?3. **Koishi 鐜**锛欿oishi v4.14.0 鎴栨洿楂樼増鏈?4. **Node.js**锛歂ode.js 18 鎴栨洿楂樼増鏈?
-## 瀹夎
+## 功能特性
+- **画家风格识别**：使用 [Kaloscope 2.0](https://huggingface.co/heathcliff01/Kaloscope2.0) 模型进行图片画家风格推理
+- **OneBot 协议支持**：完美支持 OneBot 协议的聊天平台
+- **灵活配置**：支持自定义 API 端点、模型参数等
+- **高性能**：利用本地 ComfyUI 服务，快速响应
+## 前置要求
 
-### 浣跨敤 npm
+1. **ComfyUI LSNet 插件**：需要在本地安装并运行 [comfyui-lsnet](https://github.com/spawner1145/comfyui-lsnet)
+2. **Kaloscope 模型**：下载 [Kaloscope 2.0 模型](https://huggingface.co/heathcliff01/Kaloscope2.0/tree/main) 并放置到 ComfyUI 的模型目录
+3. **Koishi 环境**：Koishi v4.14.0 或更高版本
+4. **Node.js**：Node.js 18 或更高版本
+## 安装
+
+### 使用 npm
 
 ```bash
 npm install koishi-plugin-lsnet
 ```
 
-### 浣跨敤 yarn
+### 使用 yarn
 
 ```bash
 yarn add koishi-plugin-lsnet
 ```
 
-## 閰嶇疆
+## 配置
 
-鍦?Koishi 閰嶇疆鏂囦欢涓坊鍔犳彃浠讹細
+在 Koishi 配置文件中添加插件：
 
 ```yaml
 plugins:
   lsnet:
-    endpoint: http://127.0.0.1:7860/lsnet/v1/infer  # ComfyUI LSNet API 鍦板潃
-    modelName: Kaloscope                             # 妯″瀷鐩綍鍚嶇О
-    device: cuda                                     # 璁惧绫诲瀷: cuda 鎴?cpu
-    topK: 5                                          # 杩斿洖鍓?K 涓粨鏋?    threshold: 0                                     # 缃俊搴﹂槇鍊?(0-1)
-    trigger: lsnet                                   # 瑙﹀彂鎸囦护鍏抽敭瀛?```
+    endpoint: http://127.0.0.1:7860/lsnet/v1/infer  # ComfyUI LSNet API 地址
+    modelName: Kaloscope                             # 模型目录名称
+    device: cuda                                     # 设备类型: cuda 或 cpu
+    topK: 5                                          # 返回前 K 个结果
+    threshold: 0                                     # 置信度阈值(0-1)
+    trigger: lsnet                                   # 触发指令关键词
+```
 
-### 閰嶇疆椤硅鏄?
-| 閰嶇疆椤?| 绫诲瀷 | 榛樿鍊?| 璇存槑 |
+### 配置项说明
+| 配置项 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
-| `endpoint` | string | 蹇呭～ | ComfyUI LSNet API 鐨勫畬鏁村湴鍧€ |
-| `modelName` | string | `Kaloscope` | LSNet 妯″瀷鐩綍鍚嶇О |
-| `device` | `cuda` \| `cpu` | `cuda` | 鎺ㄧ悊浣跨敤鐨勮澶?|
-| `topK` | number | `5` | 杩斿洖鍓?K 涓瘑鍒粨鏋滐紙1-20锛?|
-| `threshold` | number | `0` | 鏈€浣庣疆淇″害闃堝€硷紙0-1锛?|
-| `trigger` | string | `lsnet` | 瑙﹀彂璇嗗埆鐨勬寚浠ゅ叧閿瓧 |
+| `endpoint` | string | 必填 | ComfyUI LSNet API 的完整地址 |
+| `modelName` | string | `Kaloscope` | LSNet 模型目录名称 |
+| `device` | `cuda` \| `cpu` | `cuda` | 推理使用的设备 |
+| `topK` | number | `5` | 返回前 K 个识别结果（1-20） |
+| `threshold` | number | `0` | 最低置信度阈值（0-1） |
+| `trigger` | string | `lsnet` | 触发识别的指令关键词 |
 
-## 浣跨敤鏂规硶
+## 使用方法
 
-1. 纭繚 ComfyUI 鍜?LSNet 鎻掍欢宸插惎鍔?2. 鍦ㄨ亰澶╁钩鍙板彂閫佽Е鍙戞寚浠わ紙榛樿涓?`lsnet`锛? 鍥剧墖
-3. 鏈哄櫒浜哄皢杩斿洖璇嗗埆鍒扮殑鐢诲笀鍚嶇О鍜岀疆淇″害
+1. 确保 ComfyUI 和 LSNet 插件已启动
+2. 在聊天平台发送触发指令（默认为 `lsnet`）+ 图片
+3. 机器人将返回识别到的画家名称和置信度
 
-### 绀轰緥
+### 示例
 
 ```
-鐢ㄦ埛: lsnet [鍥剧墖]
-鏈哄櫒浜? 璇嗗埆缁撴灉锛歁ika Pikazo锛堢疆淇″害 87.65%锛?```
+用户: lsnet [图片]
+机器人: 识别结果：Mika Pikazo（置信度 87.65%）
+```
 
-## ComfyUI LSNet 璁剧疆
+## ComfyUI LSNet 设置
 
-### 瀹夎 ComfyUI LSNet
+### 安装 ComfyUI LSNet
 
-鍙傝€?[comfyui-lsnet 浠撳簱](https://github.com/spawner1145/comfyui-lsnet) 鐨勫畨瑁呰鏄庛€?
-### 涓嬭浇妯″瀷
+参考 [comfyui-lsnet 仓库](https://github.com/spawner1145/comfyui-lsnet) 的安装说明。
 
-浠?[Hugging Face](https://huggingface.co/heathcliff01/Kaloscope2.0/tree/main) 涓嬭浇 Kaloscope 2.0 妯″瀷鏂囦欢锛屽苟鏀剧疆鍒帮細
+### 下载模型
+
+从 [Hugging Face](https://huggingface.co/heathcliff01/Kaloscope2.0/tree/main) 下载 Kaloscope 2.0 模型文件，并放置到：
 
 ```
 ComfyUI/models/lsnet/Kaloscope/
 ```
 
-### 鍚姩 API 鏈嶅姟
+### 启动 API 服务
 
 ```bash
-# 鍚姩 ComfyUI LSNet API
+# 启动 ComfyUI LSNet API
 python -m scripts.app
 ```
 
-榛樿鐩戝惉鍦?`http://127.0.0.1:7860`
+默认监听在 `http://127.0.0.1:7860`
 
-## API 鏍煎紡
+## API 格式
 
-鎻掍欢浼氬悜 ComfyUI LSNet API 鍙戦€佸涓嬫牸寮忕殑璇锋眰锛?
+插件会向 ComfyUI LSNet API 发送如下格式的请求：
 ```json
 {
   "input_image": "base64_encoded_image_data",
@@ -95,7 +104,7 @@ python -m scripts.app
 }
 ```
 
-棰勬湡杩斿洖鏍煎紡锛?
+预期返回格式：
 ```json
 {
   "results": {
@@ -109,67 +118,71 @@ python -m scripts.app
 }
 ```
 
-## 寮€鍙?
-### 鍏嬮殕浠撳簱
+## 开发
+### 克隆仓库
 
 ```bash
 git clone https://github.com/FHfanshu/koishi-plugin-lsnet.git
 cd koishi-plugin-lsnet
 ```
 
-### 瀹夎渚濊禆
+### 安装依赖
 
 ```bash
 npm install
 ```
 
-### 鏋勫缓
+### 构建
 
 ```bash
 npm run build
 ```
 
-### 娴嬭瘯
+### 测试
 
-鍦?`example/` 鐩綍涓嬫彁渚涗簡涓€涓祴璇曠敤鐨?Koishi 瀹炰緥锛?
+在 `example/` 目录下提供了一个测试用的 Koishi 实例：
 ```bash
 cd example
 npm install
 npm start
 ```
 
-## 鏁呴殰鎺掗櫎
+## 故障排除
 
-### 鍥剧墖鑾峰彇澶辫触
+### 图片获取失败
 
-濡傛灉閬囧埌鍥剧墖鑾峰彇澶辫触鐨勯棶棰橈紝鎻掍欢浼氬皾璇曞绉嶆柟寮忚幏鍙栧浘鐗囷細
-1. 鐩存帴浠?URL 涓嬭浇
-2. 閫氳繃 Bot 鐨?`getFile` API 鑾峰彇
-3. 浣跨敤鏈湴鏂囦欢璺緞
+如果遇到图片获取失败的问题，插件会尝试多种方式获取图片：
+1. 直接从 URL 下载
+2. 通过 Bot 的 `getFile` API 获取
+3. 使用本地文件路径
 
-### API 璋冪敤瓒呮椂
+### API 调用超时
 
-榛樿瓒呮椂鏃堕棿涓?60 绉掋€傚鏋滄ā鍨嬫帹鐞嗘椂闂磋緝闀匡紝鍙兘闇€瑕侊細
-- 浣跨敤鏇村己鐨?GPU
-- 鍑忓皬 `topK` 鍙傛暟
-- 浼樺寲 ComfyUI 閰嶇疆
+默认超时时间为 60 秒。如果模型推理时间较长，可能需要：
+- 使用更弱的 GPU
+- 减小 `topK` 参数
+- 优化 ComfyUI 配置
 
-### OneBot 鍗忚鍏煎鎬?
-鐩墠浠呮敮鎸?OneBot 鍗忚銆傚闇€鏀寔鍏朵粬鍗忚锛岃鎻愪氦 Issue 鎴?PR銆?
-## 鑷磋阿
+### OneBot 协议兼容性
 
-- [comfyui-lsnet](https://github.com/spawner1145/comfyui-lsnet) - ComfyUI LSNet 鎻掍欢
-- [Kaloscope 2.0](https://huggingface.co/heathcliff01/Kaloscope2.0) - 鐢诲笀椋庢牸璇嗗埆妯″瀷
-- [@heathcliff01](https://huggingface.co/heathcliff01) - 妯″瀷璁粌
+目前仅支持 OneBot 协议。如需支持其他协议，请提交 Issue 或 PR。
+## 致谢
 
-## 璁稿彲璇?
-鏈」鐩噰鐢?[MIT](LICENSE) 璁稿彲璇併€?
-## 璐＄尞
+- [comfyui-lsnet](https://github.com/spawner1145/comfyui-lsnet) - ComfyUI LSNet 插件
+- [Kaloscope 2.0](https://huggingface.co/heathcliff01/Kaloscope2.0) - 画家风格识别模型
+- [@heathcliff01](https://huggingface.co/heathcliff01) - 模型训练
 
-娆㈣繋鎻愪氦 Issue 鍜?Pull Request锛?
-## 閾炬帴
+## 许可证
 
-- [GitHub 浠撳簱](https://github.com/FHfanshu/koishi-plugin-lsnet)
-- [npm 鍖匽(https://www.npmjs.com/package/koishi-plugin-lsnet)
-- [Koishi 瀹樼綉](https://koishi.chat/)
+本项目采用 [MIT](LICENSE) 许可证。
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 链接
+
+- [GitHub 仓库](https://github.com/FHfanshu/koishi-plugin-lsnet)
+- [npm 包](https://www.npmjs.com/package/koishi-plugin-lsnet)
+- [Koishi 官网](https://koishi.chat/)
 

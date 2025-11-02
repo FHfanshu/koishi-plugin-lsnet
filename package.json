@@ -1,4 +1,4 @@
-﻿{
+{
     "name":  "koishi-plugin-lsnet",
     "version":  "1.0.0",
     "description":  "Koishi plugin that calls a local ComfyUI LSNet endpoint to infer artist names from images.",
@@ -45,7 +45,7 @@
     "license":  "MIT",
     "koishi":  {
                    "description":  {
-                                       "zh":  "浣跨敤 ComfyUI LSNet 杩涜鍥剧墖鐢诲笀璇嗗埆"
+                                       "zh":  "lsnet反推画师名"
                                    },
                    "service":  {
                                    "required":  [

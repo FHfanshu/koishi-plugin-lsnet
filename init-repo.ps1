@@ -1,5 +1,5 @@
-﻿# Koishi LSNet Plugin - Repository Initialization Script
-# 姝よ剼鏈府鍔╁垵濮嬪寲 Git 浠撳簱骞舵洿鏂伴厤缃?
+# Koishi LSNet Plugin - Repository Initialization Script
+# 此脚本帮助初始化 Git 仓库并更新配置
 param(
     [Parameter(Mandatory = $true)]
     [string]$GitHubUsername,
