@@ -1,0 +1,90 @@
+======================================
+   koishi-plugin-lsnet 发布速查
+======================================
+
+【第一步：更新个人信息】
+1. 修改 package.json：
+   - author: "你的名字"
+   - repository.url 中的 yourusername 改为你的 GitHub 用户名
+   
+2. 全局搜索替换 README.md 等文件中的 "yourusername"
+
+【第二步：初始化 Git（可选使用脚本）】
+方法A - 使用脚本（推荐）：
+  .\init-repo.ps1 -GitHubUsername "你的用户名" -AuthorName "你的名字"
+
+方法B - 手动操作：
+  git init
+  git add .
+  git commit -m "Initial commit: koishi-plugin-lsnet v1.0.0"
+  git branch -M main
+
+【第三步：创建 GitHub 仓库】
+1. 访问：https://github.com/new
+2. 仓库名：koishi-plugin-lsnet
+3. 公开仓库
+4. 不要初始化 README（已有）
+
+【第四步：推送到 GitHub】
+  git remote add origin https://github.com/你的用户名/koishi-plugin-lsnet.git
+  git push -u origin main
+
+【第五步：创建 GitHub Release】
+1. 进入仓库 -> Releases -> Create a new release
+2. Tag: v1.0.0
+3. Title: v1.0.0 - Initial Release
+4. 描述：复制 CHANGELOG.md 内容
+5. Publish release
+
+【第六步：发布到 npm】
+  npm login
+  npm publish
+
+【验证发布】
+  npm view koishi-plugin-lsnet
+  
+【测试安装】
+  mkdir test && cd test
+  npm init -y
+  npm install koishi-plugin-lsnet
+
+======================================
+           本地测试命令
+======================================
+
+【在 example 目录测试】
+  cd example
+  npm install
+  npm start
+
+【确保前置条件】
+✓ ComfyUI LSNet API 已启动（http://127.0.0.1:7860）
+✓ OneBot 客户端已运行（ws://127.0.0.1:6700）
+✓ 模型文件已放置到正确位置
+
+======================================
+        后续版本更新流程
+======================================
+
+1. 修改代码
+2. 更新 CHANGELOG.md
+3. 更新版本号：
+   npm version patch  # 1.0.0 -> 1.0.1
+   npm version minor  # 1.0.0 -> 1.1.0
+   npm version major  # 1.0.0 -> 2.0.0
+4. git push && git push --tags
+5. 在 GitHub 创建新 Release
+6. npm publish
+
+======================================
+           相关文档参考
+======================================
+
+详细说明：
+  - README.md         项目主文档
+  - QUICK_START.md    快速开始指南
+  - PUBLISH.md        完整发布指南
+  - CHECKLIST.md      发布检查清单
+  - PROJECT_SUMMARY.md 项目技术总结
+
+======================================

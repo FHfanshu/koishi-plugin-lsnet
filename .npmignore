@@ -1,0 +1,46 @@
+# Source files (only ship compiled JS)
+src/
+tsconfig.json
+
+# Development files
+example/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Testing
+tests/
+test/
+*.test.js
+*.test.ts
+coverage/
+.nyc_output/
+
+# Documentation (except README)
+docs/
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.tsbuildinfo

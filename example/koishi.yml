@@ -1,0 +1,16 @@
+plugins:
+  proxy-agent:eityc5: {}
+  http:qitm4j: {}
+  adapter-onebot:jmm0jb:
+    selfId: '1234567890'
+    token: ''
+    protocol: ws
+    endpoint: ws://127.0.0.1:6700
+  console:5q7g1j: {}
+  lsnet:em8m67:
+    endpoint: http://127.0.0.1:7860/lsnet/v1/infer
+    modelName: Kaloscope
+    device: cuda
+    topK: 5
+    threshold: 0
+    trigger: lsnet
