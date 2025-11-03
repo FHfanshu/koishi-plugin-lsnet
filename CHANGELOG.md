@@ -26,4 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic fallback for image fetching
 - Detailed error logging
 
+[1.0.3] - 2025-11-03
+
+### Fixed
+- Improve image fetching to support data URIs and local file paths when running commands such as `lsnet.testfile`.
+- Deduplicate image candidate lookup to avoid duplicate requests and noisy logs.
+
+[1.0.3]: https://github.com/yourusername/koishi-plugin-lsnet/releases/tag/v1.0.3
 [1.0.0]: https://github.com/yourusername/koishi-plugin-lsnet/releases/tag/v1.0.0
