@@ -87,7 +87,7 @@ plugins:
     apiKeys:
       - - YOUR_DEEPSEEK_API_KEY_HERE
   adapter-onebot:qwzvcl:
-    selfId: '2285124017'
+    selfId: 'YOUR_BOT_QQ_NUMBER'
   chatluna-plugin-common:m4ofre:
     actions: true
   ~chatluna-actions:z4dkf8:

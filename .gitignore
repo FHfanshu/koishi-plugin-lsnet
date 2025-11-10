@@ -41,3 +41,6 @@ coverage/
 *.tmp
 *.temp
 .cache/
+
+# Example configurations (may contain sensitive data)
+example/koishi-app/
