@@ -22,9 +22,11 @@ function setupChatlunaIntegration(ctx, config) {
   const chatlunaConfig = config.chatluna
   if (!chatlunaConfig?.enabled) return
 
-  const service = ctx.chatluna
-  if (!service) {
-    logger.warn('[lsnet] 启用了 ChatLuna Actions 联动，但未检测到 chatluna 服务。')
+  let ChatLunaPlugin
+  try {
+    ;({ ChatLunaPlugin } = require('koishi-plugin-chatluna/services/chat'))
+  } catch (error) {
+    logger.warn('[lsnet] 启用了 ChatLuna Actions 联动，但未能加载 chatluna 服务模块。', error)
     return
   }
 
@@ -57,14 +59,19 @@ function setupChatlunaIntegration(ctx, config) {
   }
 
   class LsnetChatlunaTool extends StructuredTool {
-    constructor() {
-      super()
-      this.name = actionName
-      this.description = `${actionDescription}\n${toolHint}`.trim()
-      this.schema = z.object({
-        image: z.string().trim().optional().describe('可选，供识别的图片 URL、Data URI 或 Bot 文件 ID。'),
-        note: z.string().trim().optional().describe('可选，对图片的补充说明。'),
-      }).describe(toolHint)
+    constructor(toolCtx, pluginConfig, options) {
+      super({})
+      this.ctx = toolCtx
+      this.pluginConfig = pluginConfig
+      this.allowedModel = options.allowedModel
+      this.name = options.actionName
+      this.description = `${options.actionDescription}\n${options.toolHint}`.trim()
+      this.schema = z
+        .object({
+          image: z.string().trim().optional().describe('可选，供识别的图片 URL、Data URI 或 Bot 文件 ID。'),
+          note: z.string().trim().optional().describe('可选，对图片的补充说明。'),
+        })
+        .describe(options.toolHint)
     }
 
     async _call(input = {}, _runManager, runtimeConfig = {}) {
@@ -73,17 +80,17 @@ function setupChatlunaIntegration(ctx, config) {
         return '无法获取会话上下文，已取消识别。'
       }
 
-      if (allowedModel) {
+      if (this.allowedModel) {
         const currentModel = session?.chatluna?.model || session?.chatluna?.request?.model
-        if (currentModel && currentModel !== allowedModel) {
-          return `当前会话模型 ${currentModel} 无法调用该工具，请切换到 ${allowedModel}。`
+        if (currentModel && currentModel !== this.allowedModel) {
+          return `当前会话模型 ${currentModel} 无法调用该工具，请切换到 ${this.allowedModel}。`
         }
       }
 
       const virtualImage = createVirtualImageSegment(input.image)
 
       try {
-        const result = await getLsnetInferenceResult(ctx, session, config, virtualImage)
+        const result = await getLsnetInferenceResult(this.ctx, session, this.pluginConfig, virtualImage)
         if (result.status === 'missing-image') {
           return '未能找到可识别的图片，请确保用户上传了图片或在调用工具时提供 image 字段。'
         }
@@ -95,31 +102,58 @@ function setupChatlunaIntegration(ctx, config) {
     }
   }
 
-  ctx.effect(() => {
-    const dispose = service.platform.registerTool(`action_${actionName}`, {
-      createTool() {
-        return new LsnetChatlunaTool()
-      },
-      selector() {
-        return true
-      },
-    })
+  ctx.plugin({
+    name: 'lsnet:chatluna-tools',
+    inject: ['chatluna'],
+    apply(innerCtx) {
+      logger.info('[lsnet] ChatLuna 工具注册子插件已启动')
 
-    logger.info(`[lsnet] 已向 ChatLuna 注册工具 action_${actionName}`)
+      const plugin = new ChatLunaPlugin(
+        innerCtx,
+        config,
+        'lsnet',
+        false,
+      )
 
-    return () => {
-      dispose?.()
-      logger.info(`[lsnet] 已从 ChatLuna 注销工具 action_${actionName}`)
-    }
-  })
+      innerCtx.on('ready', async () => {
+        try {
+          await innerCtx.chatluna
+        } catch (error) {
+          logger.warn('[lsnet] ChatLuna 服务不可用，无法注册工具。', error)
+          return
+        }
 
-  ctx.on('ready', () => {
-    if (allowedModel) {
-      const modelInfo = service.platform.findModel(allowedModel)?.value
-      if (!modelInfo) {
-        logger.warn(`[lsnet] ChatLuna 未找到模型 ${allowedModel}，工具将对所有模型开放。`)
-      }
-    }
+        try {
+          plugin.registerTool(actionName, {
+            selector() {
+              return true
+            },
+            createTool() {
+              return new LsnetChatlunaTool(innerCtx, config, {
+                actionName,
+                actionDescription,
+                toolHint,
+                allowedModel,
+              })
+            },
+          })
+          logger.info(`[lsnet] 已向 ChatLuna 注册工具 ${actionName}`)
+        } catch (error) {
+          logger.error('[lsnet] ChatLuna 工具注册失败。', error)
+        }
+
+        if (allowedModel) {
+          const modelInfo = innerCtx.chatluna?.platform?.findModel(allowedModel)?.value
+          if (!modelInfo) {
+            logger.warn(`[lsnet] ChatLuna 未找到模型 ${allowedModel}，工具将对所有模型开放。`)
+          }
+        }
+      })
+
+      innerCtx.on('dispose', () => {
+        logger.info('[lsnet] ChatLuna 工具注册子插件已卸载')
+      })
+    },
   })
 }
 
@@ -244,23 +278,70 @@ const inject = {
 const PENDING_PROMPT_TIMEOUT = 5 * 60 * 1000
 const pendingSessions = new Map()
 
-const Config = Schema.object({
-  endpoint: Schema.string().description('ComfyUI LSNet API 地址，例如 http://127.0.0.1:7860/lsnet/v1/infer'),
-  modelName: Schema.string().default('Kaloscope').description('LSNet 模型目录名称'),
-  device: Schema.union(['cuda', 'cpu']).default('cuda'),
-  topK: Schema.number().default(5).min(1).max(20),
-  threshold: Schema.number().default(0).min(0).max(1),
-  trigger: Schema.string().default('lsnet').description('触发指令关键字'),
-  lslog: Schema.boolean().default(false).description('启用详细日志输出以便排查问题'),
-  middlewareLog: Schema.boolean().default(false).description('输出中间件详细日志（需同时启用详细日志）'),
-  chatluna: Schema.object({
-    enabled: Schema.boolean().default(false).description('启用 ChatLuna Actions 联动'),
-    actionName: Schema.string().default('lsnet.identify').description('注册到 ChatLuna 的 Action 名称'),
-    actionDescription: Schema.string().default('识别用户提供的图片并返回最可能的画师。').role('textarea').description('提供给 ChatLuna 的 Action 描述'),
-    model: Schema.dynamic('model').default('无').description('允许调用此 Action 的 ChatLuna 模型，选择“无”为不限制'),
-    inputPrompt: Schema.string().default('当需要识别图片画师时调用此工具，并提供描述或图片地址。').description('提示 AI 如何调用此工具'),
-  }).description('ChatLuna 联动设置'),
-})
+const Config = Schema.intersect([
+  Schema.object({
+    endpoint: Schema.string()
+      .required()
+      .description('LSNet API 地址，例如 http://127.0.0.1:7860/lsnet/v1/infer'),
+  }).description('API 配置'),
+
+  Schema.object({
+    modelName: Schema.string()
+      .default('Kaloscope')
+      .description('LSNet 模型目录名称（对应后端服务中的模型文件夹）'),
+    device: Schema.union(['cuda', 'cpu'])
+      .default('cuda')
+      .description('推理设备：使用 GPU (cuda) 或 CPU 进行推理'),
+    topK: Schema.number()
+      .default(5)
+      .min(1)
+      .max(20)
+      .description('返回前 K 个识别结果的数量'),
+    threshold: Schema.number()
+      .default(0)
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .description('最低置信度阈值（0-1），低于此值的结果将被过滤'),
+  }).description('模型配置'),
+
+  Schema.object({
+    trigger: Schema.string()
+      .default('lsnet')
+      .description('触发识别的指令关键字（例如：lsnet、识别画师等）'),
+  }).description('指令配置'),
+
+  Schema.object({
+    lslog: Schema.boolean()
+      .default(false)
+      .description('启用详细日志输出，用于排查问题和调试'),
+    middlewareLog: Schema.boolean()
+      .default(false)
+      .description('输出中间件详细日志（需同时启用详细日志）'),
+  }).description('调试选项'),
+
+  Schema.object({
+    chatluna: Schema.object({
+      enabled: Schema.boolean()
+        .default(false)
+        .description('启用 ChatLuna Actions 联动，允许 AI 助手调用识别功能'),
+      actionName: Schema.string()
+        .default('lsnet.identify')
+        .description('注册到 ChatLuna 的 Action 名称'),
+      actionDescription: Schema.string()
+        .default('识别用户提供的图片并返回最可能的画师。')
+        .role('textarea')
+        .description('提供给 ChatLuna 的 Action 描述'),
+      model: Schema.dynamic('model')
+        .default('无')
+        .description('允许调用此 Action 的 ChatLuna 模型，选择"无"为不限制'),
+      inputPrompt: Schema.string()
+        .default('当需要识别图片画师时调用此工具，并提供描述或图片地址。')
+        .role('textarea')
+        .description('提示 AI 如何调用此工具'),
+    }).description('ChatLuna 集成配置'),
+  }).description('ChatLuna 联动'),
+])
 
 function apply(ctx, config) {
   logger.info(`[lsnet] 插件开始加载，配置: ${JSON.stringify(config)}`)

@@ -1,7 +1,7 @@
 {
     "name":  "koishi-plugin-lsnet",
-    "version":  "1.0.3",
-    "description":  "Koishi plugin that calls a local ComfyUI LSNet endpoint to infer artist names from images.",
+    "version":  "1.0.4",
+    "description":  "Koishi plugin that calls a local LSNet endpoint to infer artist names from images.",
     "main":  "index.js",
     "files":  [
                   "index.js",

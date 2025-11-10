@@ -18,6 +18,12 @@ plugins:
     telemetry:4ltlcz: {}
     lsnet:lsnet01:
       endpoint: http://127.0.0.1:7860/lsnet/v1/infer
+      lslog: true
+      chatluna:
+        enabled: true
+        model: deepseek/deepseek-chat
+      modelName: KaloscopeV2
+      device: cpu
   group:console:
     actions:ip5hz3: {}
     analytics:6h78zg: {}
@@ -35,7 +41,8 @@ plugins:
     insight:uu14lx: {}
     market:9i6m6e:
       search:
-        endpoint: https://registry.koishi.chat/index.json
+        endpoint: >-
+          https://gitee.com/shangxueink/koishi-registry-aggregator/raw/gh-pages/market.json
     notifier:1sirmm: {}
     oobe:mzgei0: {}
     sandbox:uzeq45: {}
@@ -71,3 +78,18 @@ plugins:
     $if: env.NODE_ENV === 'development'
     hmr:2jnhj1:
       root: .
+  chatluna:hxhhsl:
+    defaultModel: deepseek/deepseek-chat
+    outputMode: raw
+    splitMessage: true
+    isLog: true
+  chatluna-deepseek-adapter:3funju:
+    apiKeys:
+      - - sk-fb8b3e45d98848989c8fd01c3602ff58
+  adapter-onebot:qwzvcl:
+    selfId: '2285124017'
+  chatluna-plugin-common:m4ofre:
+    actions: true
+  ~chatluna-actions:z4dkf8:
+    commands:
+      - null
