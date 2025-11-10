@@ -85,7 +85,7 @@ plugins:
     isLog: true
   chatluna-deepseek-adapter:3funju:
     apiKeys:
-      - - sk-fb8b3e45d98848989c8fd01c3602ff58
+      - - YOUR_DEEPSEEK_API_KEY_HERE
   adapter-onebot:qwzvcl:
     selfId: '2285124017'
   chatluna-plugin-common:m4ofre:
